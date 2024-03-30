@@ -1,0 +1,25 @@
+body{
+    margin-left: 20px;
+}
+
+.container{
+    width: 400px;
+    border: 2px solid black;
+    margin: 10px;
+    padding: 5px;
+    background-color :aliceblue;
+    border-radius: 10px;
+}
+
+.to{
+    position: relative;
+    left : 100px;
+}
+
+.msg{
+    background-color: rgb(15, 119, 184);
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color: white;
+    padding-left: 60px;
+    border-radius: 10px;
+}

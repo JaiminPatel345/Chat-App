@@ -2,10 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const Chat = require('./models/chat.js');
+const methodOverride = require('method-override');
 
 const app = express();
 const port = 3000;
-
+app.use(methodOverride  ('_method'));
 app.use (express.urlencoded({ extended: true })); 
 
 app.set('view engine' , 'ejs');
@@ -25,8 +26,56 @@ async function main() {
 
 
 app.get('/' , (req , res) => {
-    res.send("Working");
+    res.send("Home Page");
 })
+
+//index route
+app.get('/chats' , async (req , res) => {
+    let chats =  await Chat.find();
+    res.render('index.ejs' , {chats});
+});
+
+
+app.get('/chats/new' , async (req , res) => {
+  res.render('new.ejs' );
+});
+
+// new chat
+app.post('/chats' , async (req , res) => {
+  let {from , to , msg} = req.body;
+  let newChat = new Chat({
+    from : from,
+    to : to,
+    msg : msg,
+    createdAt : new Date()
+  });
+  newChat.save();
+  res.redirect('/chats');
+});
+
+
+//edit chat
+app.get('/chats/:id/edit' , async (req , res) => {
+  let {id} = req.params;
+  let chat = await Chat.findById(id);
+  // console.log(chat);
+  res.render('edit.ejs' ,{chat});
+});
+
+app.put('/chats/:id' , async (req , res) => {
+  let {id} = req.params;
+  let chat = await Chat.findByIdAndUpdate(id , {msg :req.body.msg} , {new : true} , {runValidator : true});
+  
+  res.redirect('/chats') ;
+});
+
+
+app.delete('/chats/:id' , async (req , res) => {
+  let {id} = req.params;
+  await Chat.findByIdAndDelete(id);
+  
+  res.redirect('/chats') ;
+});
 
 
 app.listen(port , () => console.log(`listen on port ${port}`));
